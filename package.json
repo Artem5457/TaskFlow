@@ -1,0 +1,36 @@
+{
+  "name": "task-flow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "author": "Artem Bolshak",
+  "license": "ISC",
+  "keywords": [],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "type-check": "npx tsc --noEmit",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "npx ts-node src/index.ts",
+    "lint": "eslint \"src/**/*.{ts,js}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
+    "prettier": "prettier --check \"src/**/*.{ts,js,json}\"",
+    "prettier:fix": "prettier --write \"src/**/*.{ts,js,json}\""
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3"
+  }
+}

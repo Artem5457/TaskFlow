@@ -3,4 +3,5 @@ export const envVars = {
   DB_USERNAME: 'DB_USERNAME',
   DB_PASSWORD: 'DB_PASSWORD',
   DB_HOST: 'DB_HOST',
+  PORT: 'PORT',
 };

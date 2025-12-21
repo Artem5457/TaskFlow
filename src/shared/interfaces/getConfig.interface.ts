@@ -3,4 +3,5 @@ export interface IConfig {
   dbUsername: string;
   dbPassword: string;
   dbHost: string;
+  port: number;
 }

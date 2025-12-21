@@ -1,5 +1,5 @@
-import { IConfig } from '../interfaces/index.js';
-import { envVars } from './constants.js';
+import { IConfig } from '../interfaces/index';
+import { envVars } from './constants';
 
 const getConfigValueOrThrow = (key: string): string => {
   const value = process.env[key];
@@ -14,4 +14,5 @@ export const getConfig = (): IConfig => ({
   dbUsername: getConfigValueOrThrow(envVars.DB_USERNAME),
   dbPassword: getConfigValueOrThrow(envVars.DB_PASSWORD),
   dbHost: getConfigValueOrThrow(envVars.DB_HOST),
+  port: Number(getConfigValueOrThrow(envVars.PORT)),
 });

@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '../config/db-instance.js';
-import { Role } from '../../shared/interfaces/index.js';
+import sequelize from '../config/db-instance';
+import { Role } from '../../shared/interfaces';
 import { BaseCreationOmittedFields } from '../interfaces';
 
 interface OrganizationMemberRoleAttributes {

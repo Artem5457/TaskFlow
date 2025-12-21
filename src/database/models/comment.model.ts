@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { BaseCreationOmittedFields } from '../interfaces';
-import sequelize from '../config/db-instance.js';
+import sequelize from '../config/db-instance';
 
 interface CommentAttributes {
   id: string;

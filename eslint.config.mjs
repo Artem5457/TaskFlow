@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import prettier from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 export default [
   {
@@ -10,25 +11,24 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
+  prettierConfig,
+
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      ecmaVersion: 'latest',
       sourceType: 'module',
       parserOptions: {
         project: ['./tsconfig.json'],
       },
     },
     plugins: {
-      prettier,
+      prettier: prettierPlugin,
     },
     rules: {
-      'prettier/prettier': 'error',
-      semi: ['error', 'always'],
-      quotes: ['error', 'single'],
       'no-console': ['error', { allow: ['warn', 'error'] }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
+      'prettier/prettier': 'error',
     },
   },
 ];

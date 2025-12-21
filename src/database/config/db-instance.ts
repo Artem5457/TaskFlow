@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { getConfig } from '../../shared/utils/getConfig.js';
+import { getConfig } from '../../shared/utils/getConfig';
 
 const { dbName, dbUsername, dbPassword, dbHost } = getConfig();
 

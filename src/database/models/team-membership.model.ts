@@ -1,5 +1,5 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '../config/db-instance.js';
+import sequelize from '../config/db-instance';
 import { BaseCreationOmittedFields } from '../interfaces';
 
 interface TeamMembershipAttributes {

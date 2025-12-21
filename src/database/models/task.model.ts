@@ -1,5 +1,5 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '../config/db-instance.js';
+import sequelize from '../config/db-instance';
 import { OptionalTaskFields } from '../interfaces';
 import { TaskStatus } from '../../shared/interfaces';
 

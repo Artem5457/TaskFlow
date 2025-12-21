@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db-instance.js';
 import { BaseCreationOmittedFields } from '../interfaces';
-import { InvitationStatus } from '../../shared/interfaces/index.js';
+import { InvitationStatus } from '../../shared/interfaces';
 
 interface InvitationAttributes {
   id: string;

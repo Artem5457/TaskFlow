@@ -1,6 +1,9 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { DataTypes, QueryInterface } from 'sequelize';
+import type { MigrationFn } from 'umzug';
 
-export async function up(queryInterface: QueryInterface) {
+export const up: MigrationFn = async ({ context }) => {
+  const queryInterface = context as QueryInterface;
+
   // 1. User table
   await queryInterface.createTable('user', {
     id: {
@@ -228,9 +231,11 @@ export async function up(queryInterface: QueryInterface) {
     },
     updatedAt: { type: DataTypes.DATE },
   });
-}
+};
 
-export async function down(queryInterface: QueryInterface) {
+export const down: MigrationFn = async ({ context }) => {
+  const queryInterface = context as QueryInterface;
+
   // Delete tables in reverse order
   await queryInterface.dropTable('invitation');
   await queryInterface.dropTable('comment');
@@ -240,4 +245,4 @@ export async function down(queryInterface: QueryInterface) {
   await queryInterface.dropTable('organization_member_role');
   await queryInterface.dropTable('organization');
   await queryInterface.dropTable('user');
-}
+};

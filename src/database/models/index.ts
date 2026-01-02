@@ -6,6 +6,7 @@ import TeamMembership from './team-membership.model';
 import Task from './task.model';
 import Comment from './comment.model';
 import Invitation from './invitation.model';
+import RefreshToken from './refresh-token.model';
 
 /* ===== Associations ===== */
 
@@ -54,6 +55,10 @@ Comment.belongsTo(Task, { foreignKey: 'taskId' });
 User.hasMany(Comment, { foreignKey: 'authorId' });
 Comment.belongsTo(User, { foreignKey: 'authorId' });
 
+// REFRESH TOKEN
+User.hasMany(RefreshToken, { foreignKey: 'userId', onDelete: 'CASCADE' });
+RefreshToken.belongsTo(User, { foreignKey: 'userId' });
+
 export {
   User,
   Organization,
@@ -63,4 +68,5 @@ export {
   Task,
   Comment,
   Invitation,
+  RefreshToken,
 };

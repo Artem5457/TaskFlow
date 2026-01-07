@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db-instance.js';
 import { BaseCreationOmittedFields } from '../interfaces';
-import { InvitationStatus } from '../../shared/interfaces';
+import { InvitationStatus, Role } from '../../shared/interfaces';
 
 interface InvitationAttributes {
   id: string;
@@ -9,6 +9,8 @@ interface InvitationAttributes {
   email: string;
   token: string;
   status: InvitationStatus;
+  invitedMemberRole: Role;
+  expiresAt: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,6 +29,8 @@ class Invitation
   public email!: string;
   public token!: string;
   public status!: InvitationStatus;
+  public invitedMemberRole!: Role;
+  public expiresAt!: Date;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -42,9 +46,22 @@ Invitation.init(
     email: { type: DataTypes.STRING(255), allowNull: false },
     token: { type: DataTypes.STRING(255), allowNull: false },
     status: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM(
+        InvitationStatus.PENDING,
+        InvitationStatus.ACCEPTED,
+        InvitationStatus.EXPIRED
+      ),
       allowNull: false,
       defaultValue: InvitationStatus.PENDING,
+    },
+    invitedMemberRole: {
+      type: DataTypes.ENUM(Role.MEMBER, Role.ADMIN),
+      allowNull: false,
+      defaultValue: Role.MEMBER,
+    },
+    expiresAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
   },
   {

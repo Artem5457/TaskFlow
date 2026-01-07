@@ -14,4 +14,5 @@ export interface IConfig {
   refreshTokenDaysValid: number;
   dummyPasswordHash: string;
   hmacSecret: string;
+  invitationTokenDaysValid: number;
 }

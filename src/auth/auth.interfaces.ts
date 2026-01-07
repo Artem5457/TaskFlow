@@ -1,4 +1,4 @@
-import { Role } from '../shared/interfaces';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface RegisterReqBody {
   name: string;
@@ -23,7 +23,7 @@ export interface LoginResBody {
   accessToken: string;
 }
 
-export interface RefreshTokenPayload {
+export interface AuthPayload extends JwtPayload {
   id: string;
-  role: Role;
+  email: string;
 }

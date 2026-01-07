@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { getConfig } from '../shared/utils/getConfig';
-import { Role } from '../shared/interfaces';
-import { RefreshTokenPayload, RegisterReqBody } from './auth.interfaces';
+import { AuthPayload, RegisterReqBody } from './auth.interfaces';
 import { RefreshToken, User } from '../database/models';
 import {
   UnauthorizedError,
@@ -78,18 +77,18 @@ export class AuthService {
     return user;
   }
 
-  generateTokenPair(userId: string, role: Role = Role.MEMBER) {
+  generateTokenPair(userId: string, email: string) {
     const accessToken = jwtService.generateToken(
       userId,
       accessTokenSecret,
       accessTokenExpiresIn,
-      role
+      email
     );
     const refreshToken = jwtService.generateToken(
       userId,
       refreshTokenSecret,
       refreshTokenExpiresIn,
-      role
+      email
     );
 
     logger.info({ userId }, 'Token pair generated (access + refresh)');
@@ -98,7 +97,7 @@ export class AuthService {
   }
 
   async storeRefreshToken(userId: string, refreshToken: string): Promise<void> {
-    const refreshTokenHash = await jwtService.hashToken(refreshToken);
+    const refreshTokenHash = jwtService.hashToken(refreshToken);
     const expiresAt = calcExpirationDate(
       calcMillisecondsInDays(refreshTokenDaysValid)
     );
@@ -115,16 +114,14 @@ export class AuthService {
   }
 
   async revokeRefreshToken(refreshToken: string): Promise<void> {
-    const tokenHash = await jwtService.hashToken(refreshToken);
+    const tokenHash = jwtService.hashToken(refreshToken);
     await RefreshToken.destroy({ where: { token: tokenHash } });
   }
 
-  async validateRefreshToken(
-    refreshToken: string
-  ): Promise<RefreshTokenPayload> {
-    let payload: RefreshTokenPayload;
+  async validateRefreshToken(refreshToken: string): Promise<AuthPayload> {
+    let payload: AuthPayload;
     try {
-      payload = jwtService.verifyJwt<RefreshTokenPayload>(
+      payload = jwtService.verifyJwt<AuthPayload>(
         refreshToken,
         refreshTokenSecret
       );
@@ -141,7 +138,7 @@ export class AuthService {
       throw new UnauthorizedError();
     }
 
-    const valid = await jwtService.verifyToken(refreshToken, storedToken.token);
+    const valid = jwtService.verifyToken(refreshToken, storedToken.token);
     if (!valid) {
       logger.warn({ userId: payload.id }, 'Refresh token mismatch');
       throw new UnauthorizedError();

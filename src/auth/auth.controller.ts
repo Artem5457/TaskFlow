@@ -17,7 +17,7 @@ const { nodeEnv, refreshTokenDaysValid } = getConfig();
 
 export class AuthController {
   async register(
-    req: Request<object, object, RegisterReqBody>,
+    req: Request<unknown, unknown, RegisterReqBody>,
     res: Response<RegisterResBody>
   ): Promise<void> {
     const user = await authService.registerUser(req.body);
@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   async login(
-    req: Request<object, object, LoginReqBody>,
+    req: Request<unknown, unknown, LoginReqBody>,
     res: Response<LoginResBody>
   ): Promise<void> {
     const { email, password } = req.body;
@@ -44,7 +44,8 @@ export class AuthController {
 
     const user = await authService.validateUser(email, password);
     const { accessToken, refreshToken } = authService.generateTokenPair(
-      user.id
+      user.id,
+      email
     );
 
     await authService.storeRefreshToken(user.id, refreshToken);
@@ -68,12 +69,12 @@ export class AuthController {
       throw new UnauthorizedError('Refresh token is required');
     }
 
-    const payload = await authService.validateRefreshToken(refreshToken);
+    const { id, email } = await authService.validateRefreshToken(refreshToken);
 
     const { accessToken, refreshToken: newRefreshToken } =
-      authService.generateTokenPair(payload.id, payload.role);
+      authService.generateTokenPair(id, email);
 
-    await authService.storeRefreshToken(payload.id, newRefreshToken);
+    await authService.storeRefreshToken(id, newRefreshToken);
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -82,7 +83,7 @@ export class AuthController {
       maxAge: calcMillisecondsInDays(refreshTokenDaysValid),
     });
 
-    logger.info({ userId: payload.id }, 'Token refreshed');
+    logger.info({ userId: id }, 'Token refreshed');
 
     res.json({ accessToken });
   }

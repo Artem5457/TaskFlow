@@ -27,4 +27,7 @@ export const getConfig = (): IConfig => ({
   ),
   dummyPasswordHash: getConfigValueOrThrow(envVars.DUMMY_PASSWORD_HASH),
   hmacSecret: getConfigValueOrThrow(envVars.HMAC_SECRET_KEY),
+  invitationTokenDaysValid: Number(
+    getConfigValueOrThrow(envVars.INVITATION_TOKEN_DAYS_VALID)
+  ),
 });

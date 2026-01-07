@@ -3,7 +3,7 @@ import sequelize from '../config/db-instance';
 import { Role } from '../../shared/interfaces';
 import { BaseCreationOmittedFields } from '../interfaces';
 
-interface OrganizationMemberRoleAttributes {
+interface OrganizationMemberAttributes {
   id: string;
   organizationId: string;
   userId: string;
@@ -12,17 +12,17 @@ interface OrganizationMemberRoleAttributes {
   updatedAt?: Date;
 }
 
-type OrganizationMemberRoleCreationAttributes = Optional<
-  OrganizationMemberRoleAttributes,
+type OrganizationMemberCreationAttributes = Optional<
+  OrganizationMemberAttributes,
   BaseCreationOmittedFields
 >;
 
-class OrganizationMemberRole
+class OrganizationMember
   extends Model<
-    OrganizationMemberRoleAttributes,
-    OrganizationMemberRoleCreationAttributes
+    OrganizationMemberAttributes,
+    OrganizationMemberCreationAttributes
   >
-  implements OrganizationMemberRoleAttributes
+  implements OrganizationMemberAttributes
 {
   public id!: string;
   public organizationId!: string;
@@ -32,7 +32,7 @@ class OrganizationMemberRole
   public readonly updatedAt!: Date;
 }
 
-OrganizationMemberRole.init(
+OrganizationMember.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -41,14 +41,17 @@ OrganizationMemberRole.init(
     },
     organizationId: { type: DataTypes.UUID, allowNull: false },
     userId: { type: DataTypes.UUID, allowNull: false },
-    role: { type: DataTypes.STRING(20), allowNull: false },
+    role: {
+      type: DataTypes.ENUM(Role.OWNER, Role.ADMIN, Role.MEMBER),
+      allowNull: false,
+    },
   },
   {
     sequelize,
     tableName: 'organization_member_role',
-    modelName: 'OrganizationMemberRole',
+    modelName: 'OrganizationMember',
     timestamps: true,
   }
 );
 
-export default OrganizationMemberRole;
+export default OrganizationMember;

@@ -47,7 +47,11 @@ Task.init(
     title: { type: DataTypes.STRING(255), allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: true },
     status: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM(
+        TaskStatus.OPEN,
+        TaskStatus.IN_PROGRESS,
+        TaskStatus.DONE
+      ),
       defaultValue: TaskStatus.OPEN,
       allowNull: false,
     },

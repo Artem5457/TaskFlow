@@ -1,19 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from '../errors';
 import { getConfig } from '../getConfig';
 import { logger } from '../logger';
+import { AuthPayload } from '../../../auth/auth.interfaces';
 
-interface AuthRequest extends Request {
-  user?: JwtPayload;
-}
+type AuthRequest = Request & { user?: AuthPayload };
 
 const { accessTokenSecret } = getConfig();
 
 /**
  * Middleware for verifying a JWT access token
  */
-export const authenticateJwt = (
+export const authenticate = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
@@ -34,7 +33,7 @@ export const authenticateJwt = (
   const token = authHeader.split(' ')[1];
 
   try {
-    const payload = jwt.verify(token, accessTokenSecret) as JwtPayload;
+    const payload = jwt.verify(token, accessTokenSecret) as AuthPayload;
     req.user = payload;
     next();
   } catch {

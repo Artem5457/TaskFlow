@@ -1,6 +1,6 @@
 import User from './user.model';
 import Organization from './organization.model';
-import OrganizationMemberRole from './organization-member-role.model';
+import OrganizationMember from './organization-member.model';
 import Team from './team.model';
 import TeamMembership from './team-membership.model';
 import Task from './task.model';
@@ -14,11 +14,11 @@ import RefreshToken from './refresh-token.model';
 User.hasMany(Organization, { foreignKey: 'ownerId', as: 'ownedOrganizations' });
 Organization.belongsTo(User, { foreignKey: 'ownerId', as: 'owner' });
 
-User.hasMany(OrganizationMemberRole, { foreignKey: 'userId' });
-OrganizationMemberRole.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(OrganizationMember, { foreignKey: 'userId' });
+OrganizationMember.belongsTo(User, { foreignKey: 'userId' });
 
-Organization.hasMany(OrganizationMemberRole, { foreignKey: 'organizationId' });
-OrganizationMemberRole.belongsTo(Organization, {
+Organization.hasMany(OrganizationMember, { foreignKey: 'organizationId' });
+OrganizationMember.belongsTo(Organization, {
   foreignKey: 'organizationId',
 });
 
@@ -62,7 +62,7 @@ RefreshToken.belongsTo(User, { foreignKey: 'userId' });
 export {
   User,
   Organization,
-  OrganizationMemberRole,
+  OrganizationMember,
   Team,
   TeamMembership,
   Task,

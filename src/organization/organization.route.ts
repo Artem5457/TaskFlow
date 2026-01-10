@@ -33,7 +33,7 @@ router.get(
 );
 
 // Update an existing organization
-router.put(
+router.patch(
   '/:orgId',
   validateParams(orgParamsSchema),
   validateBody(orgBodySchema),

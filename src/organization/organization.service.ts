@@ -102,7 +102,7 @@ export class OrganizationService {
     const hasPermission =
       !member || ![Role.OWNER, Role.ADMIN].includes(member.role);
 
-    if (!hasPermission) {
+    if (hasPermission) {
       logger.warn(
         {
           role: member?.role,

@@ -1,6 +1,6 @@
 import { MigrationFn } from 'umzug';
 import { QueryInterface, DataTypes } from 'sequelize';
-import { Role } from '../../shared/interfaces';
+import { Role } from '@shared/interfaces';
 
 export const up: MigrationFn = async ({ context }) => {
   const queryInterface = context as QueryInterface;

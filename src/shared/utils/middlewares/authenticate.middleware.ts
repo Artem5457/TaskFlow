@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from '../errors';
 import { getConfig } from '../getConfig';
 import { logger } from '../logger';
-import { AuthPayload } from '../../../auth/auth.interfaces';
+import { AuthPayload } from '@auth/auth.interfaces';
 
 type AuthRequest = Request & { user?: AuthPayload };
 

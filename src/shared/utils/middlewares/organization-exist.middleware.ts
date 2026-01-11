@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { Organization } from '../../../database/models';
 import { NotFoundError } from '../errors';
+import { Organization } from '@database/models';
 
 export const organizationExists = async (
   req: Request<{ orgId: string }>,

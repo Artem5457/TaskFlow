@@ -6,8 +6,8 @@ import {
   TeamUpdateRequest,
   UserAdditionData,
 } from './team.interfaces';
-import { AuthPayload } from '../auth/auth.interfaces';
 import { TeamService } from './team.service';
+import { AuthPayload } from '@auth/auth.interfaces';
 
 type AuthRequest<T = TeamRequest> = T & { user: AuthPayload };
 

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { NextFunction } from 'express';
-import { OrganizationMember } from '../../../database/models';
-import { OrgAuthRequest } from '../../../organization/organization.controller';
-import { Role } from '../../interfaces';
 import { ForbiddenError } from '../errors';
+import { OrgAuthRequest } from '@organization/organization.controller';
+import { OrganizationMember } from '@database/models';
+import { Role } from '@shared/interfaces';
 
 export const checkPermissions = async (
   req: Request<{ orgId: string }>,

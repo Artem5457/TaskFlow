@@ -1,7 +1,7 @@
 import path from 'path';
 import { Umzug, SequelizeStorage } from 'umzug';
-import { logger } from '../../shared/utils/logger';
 import sequelize from './db-instance';
+import { logger } from '@shared/utils/logger';
 
 const migrationLogger = logger.child({ scope: 'migration' });
 const migrationsGlob: [string, { ignore: string[] }] = [

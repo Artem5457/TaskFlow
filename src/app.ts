@@ -1,11 +1,11 @@
 import express from 'express';
 import pinoHttp from 'pino-http';
 import cookieParser from 'cookie-parser';
-import { logger } from './shared/utils/logger';
-import { errorHandler } from './shared/utils/middlewares';
-import { authRoutes } from './auth/auth.route';
-import { organizationRoutes } from './organization/organization.route';
-import { teamRoutes } from './team/team.route';
+import { logger } from '@shared/utils/logger';
+import { authRoutes } from '@auth/auth.route';
+import { teamRoutes } from '@team/team.route';
+import { organizationRoutes } from '@organization/organization.route';
+import { errorHandler } from '@shared/utils/middlewares';
 
 const app = express();
 

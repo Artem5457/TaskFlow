@@ -4,7 +4,7 @@ import { AuthPayload } from '../auth/auth.interfaces';
 import { Organization } from '../database/models';
 import { OrganizationRequest } from './organization.interfaces';
 
-type AuthRequest = OrganizationRequest & { user: AuthPayload };
+export type OrgAuthRequest = OrganizationRequest & { user: AuthPayload };
 
 const organizationService = new OrganizationService();
 
@@ -16,7 +16,7 @@ export class OrganizationController {
     const { name } = req.body;
 
     const organization = await organizationService.createOrg(
-      (req as AuthRequest).user.id,
+      (req as OrgAuthRequest).user.id,
       name!
     );
 
@@ -28,7 +28,7 @@ export class OrganizationController {
     res: Response<Organization[]>
   ): Promise<void> {
     const organizations = await organizationService.getUserOrgs(
-      (req as AuthRequest).user.id
+      (req as OrgAuthRequest).user.id
     );
     res.json(organizations);
   }
@@ -40,7 +40,7 @@ export class OrganizationController {
     const { orgId } = req.params;
     const organization = await organizationService.getOrganizationById(
       orgId,
-      (req as AuthRequest).user.id
+      (req as OrgAuthRequest).user.id
     );
 
     res.json(organization);
@@ -51,7 +51,7 @@ export class OrganizationController {
     res: Response
   ): Promise<void> {
     const { orgId } = req.params;
-    const { user } = req as AuthRequest;
+    const { user } = req as OrgAuthRequest;
     const { name } = req.body;
 
     await organizationService.updateOrg(orgId, user.id, { name: name! });
@@ -64,7 +64,7 @@ export class OrganizationController {
     res: Response
   ): Promise<void> {
     const { orgId } = req.params;
-    const { user } = req as AuthRequest;
+    const { user } = req as OrgAuthRequest;
 
     await organizationService.deleteOrg(orgId, user.id);
     res.sendStatus(204);
@@ -73,7 +73,7 @@ export class OrganizationController {
   async inviteUser(req: OrganizationRequest, res: Response): Promise<void> {
     const { orgId } = req.params;
     const { email, role } = req.body;
-    const inviterUserId = (req as AuthRequest).user.id;
+    const inviterUserId = (req as OrgAuthRequest).user.id;
 
     const { invitation, token } = await organizationService.inviteUser(
       orgId,
@@ -94,7 +94,7 @@ export class OrganizationController {
 
     await organizationService.acceptInvitation(
       orgId,
-      (req as AuthRequest).user.id,
+      (req as OrgAuthRequest).user.id,
       token!,
       role!
     );

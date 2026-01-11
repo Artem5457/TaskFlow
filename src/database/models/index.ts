@@ -30,12 +30,27 @@ Invitation.belongsTo(Organization, { foreignKey: 'organizationId' });
 Organization.hasMany(Team, { foreignKey: 'organizationId' });
 Team.belongsTo(Organization, { foreignKey: 'organizationId' });
 
-// TEAM MEMBERSHIP
-Team.hasMany(TeamMembership, { foreignKey: 'teamId' });
-TeamMembership.belongsTo(Team, { foreignKey: 'teamId' });
+// TEAM → MEMBERSHIPS
+Team.hasMany(TeamMembership, {
+  as: 'members',
+  foreignKey: 'teamId',
+  onDelete: 'CASCADE',
+});
 
-User.hasMany(TeamMembership, { foreignKey: 'userId' });
-TeamMembership.belongsTo(User, { foreignKey: 'userId' });
+TeamMembership.belongsTo(Team, {
+  foreignKey: 'teamId',
+});
+
+// USER → TEAM MEMBERSHIPS
+User.hasMany(TeamMembership, {
+  as: 'teamMemberships',
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+});
+
+TeamMembership.belongsTo(User, {
+  foreignKey: 'userId',
+});
 
 // TASK ↔ TEAM
 Team.hasMany(Task, { foreignKey: 'teamId', as: 'tasks' });

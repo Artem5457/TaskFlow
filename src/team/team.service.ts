@@ -148,11 +148,12 @@ export class TeamService {
         include: [
           {
             model: User,
-            attributes: ['id', 'email', 'firstName', 'lastName'],
+            attributes: ['id', 'email', 'name', 'lastName'],
           },
         ],
       },
     });
+    logger.info({ team });
 
     return team;
   }
@@ -188,7 +189,7 @@ export class TeamService {
     });
 
     if (existingTeamMember) {
-      throw new ConflictError('User is already a member of this team');
+      throw new ConflictError('User is already a member of team');
     }
   }
 }

@@ -24,7 +24,7 @@ export const checkPermissions = async (
   const hasPermission = ![Role.OWNER, Role.ADMIN].includes(membership.role);
 
   if (hasPermission) {
-    throw new ForbiddenError('Only ADMIN or OWNER has permission');
+    throw new ForbiddenError('Only ADMIN or OWNER has permissions');
   }
 
   next();

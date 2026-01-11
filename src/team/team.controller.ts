@@ -35,7 +35,7 @@ export class TeamController {
   async getTeamDetails(req: TeamRequest, res: Response): Promise<void> {
     const { orgId, teamId } = req.params;
 
-    const teamDetails = this.teamService.getTeamDetails(orgId, teamId);
+    const teamDetails = await this.teamService.getTeamDetails(orgId, teamId);
 
     res.status(200).json(teamDetails);
   }

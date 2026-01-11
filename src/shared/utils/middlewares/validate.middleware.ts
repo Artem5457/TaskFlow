@@ -21,7 +21,7 @@ export const validateBody = (schema: ZodSchema) => {
 export const validateParams = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.params);
+      req.params = schema.parse(req.params) as Record<string, string>;
       next();
     } catch (err) {
       if (err instanceof ZodError) {

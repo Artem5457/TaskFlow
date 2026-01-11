@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import {
   TeamMemberDeleteParams,
-  TeamMemberDeleteRequest,
   TeamParams,
   TeamRequest,
   TeamUpdateRequest,
@@ -35,9 +34,8 @@ export class TeamController {
 
   async getTeamDetails(req: TeamRequest, res: Response): Promise<void> {
     const { orgId, teamId } = req.params;
-    const userId = (req as AuthRequest).user.id;
 
-    const teamDetails = this.teamService.getTeamDetails(userId, orgId, teamId);
+    const teamDetails = this.teamService.getTeamDetails(orgId, teamId);
 
     res.status(200).json(teamDetails);
   }
@@ -45,29 +43,18 @@ export class TeamController {
   async updateTeam(req: TeamUpdateRequest, res: Response): Promise<void> {
     const { orgId, teamId } = req.params;
     const { name, description } = req.body;
-    const userId = (req as AuthRequest).user.id;
 
     const data = { name, description };
 
-    const updatedTeam = await this.teamService.updateTeam(
-      orgId,
-      userId,
-      teamId,
-      data
-    );
+    const updatedTeam = await this.teamService.updateTeam(orgId, teamId, data);
 
     res.status(200).json(updatedTeam);
   }
 
   async deleteTeam(req: TeamUpdateRequest, res: Response): Promise<void> {
     const { orgId, teamId } = req.params;
-    const userId = (req as AuthRequest).user.id;
 
-    const deletedTeam = await this.teamService.deleteTeam(
-      orgId,
-      teamId,
-      userId
-    );
+    const deletedTeam = await this.teamService.deleteTeam(orgId, teamId);
 
     res.status(200).json(deletedTeam);
   }
@@ -77,15 +64,12 @@ export class TeamController {
     res: Response
   ): Promise<void> {
     const { orgId, teamId } = req.params;
-    const userId = (req as AuthRequest).user.id;
     const { email, userId: targetUserId } = req.body;
 
-    const membership = await this.teamService.addMemberToTeam(
-      orgId,
-      teamId,
-      userId,
-      { email, userId: targetUserId }
-    );
+    const membership = await this.teamService.addMemberToTeam(orgId, teamId, {
+      email,
+      userId: targetUserId,
+    });
 
     res.status(201).json(membership);
   }
@@ -95,12 +79,10 @@ export class TeamController {
     res: Response
   ): Promise<void> {
     const { orgId, teamId, userId: targetUserId } = req.params;
-    const userId = (req as AuthRequest<TeamMemberDeleteRequest>).user.id;
 
     const deletedMember = await this.teamService.deleteTeamMember(
       orgId,
       teamId,
-      userId,
       targetUserId
     );
 

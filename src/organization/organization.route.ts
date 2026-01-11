@@ -1,13 +1,16 @@
 import { Router } from 'express';
 import { OrganizationController } from './organization.controller';
-import { validateBody, validateParams } from '../shared/utils/middlewares';
+import {
+  authenticate,
+  validateBody,
+  validateParams,
+} from '../shared/utils/middlewares';
 import {
   acceptInvitationBodySchema,
   inviteUserBodySchema,
   orgBodySchema,
   orgParamsSchema,
 } from './organization.schemas';
-import { authenticate } from '../shared/utils/middlewares/authenticate.middleware';
 
 const router = Router();
 

@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import { TeamController } from './team.controller';
-import { validateBody, validateParams } from '../shared/utils/middlewares';
+import {
+  authenticate,
+  checkPermissions,
+  organizationExists,
+  validateBody,
+  validateParams,
+} from '../shared/utils/middlewares';
 import {
   orgTeamParamsSchema,
   teamBodySchema,
@@ -9,8 +15,6 @@ import {
   teamUpdateBodySchema,
   userAdditionSchema,
 } from './team.schemas';
-import { authenticate } from '../shared/utils/middlewares/authenticate.middleware';
-import { organizationExists } from '../shared/utils/middlewares/organization-exist.middleware';
 import { TeamService } from './team.service';
 
 const router = Router({ mergeParams: true });
@@ -18,13 +22,14 @@ const router = Router({ mergeParams: true });
 const teamService = new TeamService();
 const teamController = new TeamController(teamService);
 
-// Create a new team in organization
+// Create a new team in organization (only ADMIN/OWNER)
 router.post(
   '/',
   validateParams(orgTeamParamsSchema),
   validateBody(teamBodySchema),
   authenticate,
   organizationExists,
+  checkPermissions,
   teamController.createTeam.bind(teamController)
 );
 
@@ -53,6 +58,7 @@ router.patch(
   validateBody(teamUpdateBodySchema),
   authenticate,
   organizationExists,
+  checkPermissions,
   teamController.updateTeam.bind(teamController)
 );
 
@@ -62,6 +68,7 @@ router.delete(
   validateParams(teamParamsSchema),
   authenticate,
   organizationExists,
+  checkPermissions,
   teamController.deleteTeam.bind(teamController)
 );
 
@@ -72,6 +79,7 @@ router.post(
   validateBody(userAdditionSchema),
   authenticate,
   organizationExists,
+  checkPermissions,
   teamController.addMemberToTeam.bind(teamController)
 );
 
@@ -81,6 +89,7 @@ router.delete(
   validateParams(teamMemberDeleteParamsSchema),
   authenticate,
   organizationExists,
+  checkPermissions,
   teamController.deleteTeamMember.bind(teamController)
 );
 

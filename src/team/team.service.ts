@@ -5,7 +5,6 @@ import {
   TeamMembership,
   User,
 } from '../database/models';
-import { Role } from '../shared/interfaces';
 import {
   ConflictError,
   ForbiddenError,
@@ -50,21 +49,7 @@ export class TeamService {
     return teams;
   }
 
-  async getTeamDetails(
-    userId: string,
-    orgId: string,
-    teamId: string
-  ): Promise<Team> {
-    const orgMember = await OrganizationMember.findOne({
-      where: { organizationId: orgId, userId },
-    });
-
-    if (!orgMember) {
-      throw new ForbiddenError(
-        'User has no access to organization while fetching team'
-      );
-    }
-
+  async getTeamDetails(orgId: string, teamId: string): Promise<Team> {
     const team = await this.getTeamWithMembers(teamId, orgId);
 
     if (!team) {
@@ -77,15 +62,10 @@ export class TeamService {
 
   async updateTeam(
     orgId: string,
-    userId: string,
     teamId: string,
     data: TeamUpdateData
   ): Promise<Team> {
-    const member = await this.getOrganizationMember(orgId, userId);
-
-    this.ensureUserCanUpdateOrDeleteTeam(member);
-
-    const team = await this.getTeam(orgId, teamId);
+    const team = await this.getTeamOrThrow(orgId, teamId);
 
     await team.update(data);
     logger.info(`Team ${teamId} was successfully updated`);
@@ -93,17 +73,10 @@ export class TeamService {
     return team;
   }
 
-  async deleteTeam(
-    orgId: string,
-    teamId: string,
-    userId: string
-  ): Promise<Team> {
+  async deleteTeam(orgId: string, teamId: string): Promise<Team> {
     logger.info('Deleting team');
 
-    const member = await this.getOrganizationMember(orgId, userId);
-    this.ensureUserCanUpdateOrDeleteTeam(member);
-
-    const team = await this.getTeam(orgId, teamId);
+    const team = await this.getTeamOrThrow(orgId, teamId);
     await team.destroy();
 
     logger.info('Team deleted successfully');
@@ -114,20 +87,14 @@ export class TeamService {
   async addMemberToTeam(
     orgId: string,
     teamId: string,
-    currentUserId: string,
     data: UserAdditionData
   ): Promise<TeamMembership> {
     logger.info('Adding a member to team');
 
-    const [orgMember] = await this.getOrgMemberAndTeam(
-      orgId,
-      teamId,
-      currentUserId
-    );
-    this.ensureUserCanAddOrDeleteMember(orgMember);
+    await this.getTeamOrThrow(orgId, teamId);
 
     const user = await this.getUser(data);
-    await this.checkMembership(orgId, teamId, user.id);
+    await this.checkMembership(teamId, user.id);
 
     const teamMember = await TeamMembership.create({ teamId, userId: user.id });
     logger.info('Member added to team');
@@ -138,18 +105,11 @@ export class TeamService {
   async deleteTeamMember(
     orgId: string,
     teamId: string,
-    currentUserId: string,
     targetUserId: string
   ): Promise<TeamMembership> {
     logger.info('Deleting a member from team');
 
-    const [orgMember] = await this.getOrgMemberAndTeam(
-      orgId,
-      teamId,
-      currentUserId
-    );
-    this.ensureUserCanAddOrDeleteMember(orgMember);
-
+    await this.getTeamOrThrow(orgId, teamId);
     const user = await this.getUser({ userId: targetUserId });
 
     const membership = await OrganizationMember.findOne({
@@ -197,28 +157,7 @@ export class TeamService {
     return team;
   }
 
-  private async getOrganizationMember(
-    orgId: string,
-    userId: string
-  ): Promise<OrganizationMember> {
-    const member = await OrganizationMember.findOne({
-      where: { organizationId: orgId, userId },
-    });
-
-    if (!member) {
-      throw new ForbiddenError('You are not member of this organization');
-    }
-
-    return member;
-  }
-
-  private ensureUserCanUpdateOrDeleteTeam(member: OrganizationMember): void {
-    if (![Role.OWNER, Role.ADMIN].includes(member.role)) {
-      throw new ForbiddenError('Only owner or admin can update or delete team');
-    }
-  }
-
-  private async getTeam(orgId: string, teamId: string): Promise<Team> {
+  private async getTeamOrThrow(orgId: string, teamId: string): Promise<Team> {
     const team = await Team.findOne({
       where: { id: teamId, organizationId: orgId },
     });
@@ -228,34 +167,6 @@ export class TeamService {
     }
 
     return team;
-  }
-
-  private async getOrgMemberAndTeam(
-    orgId: string,
-    teamId: string,
-    userId: string
-  ) {
-    const [orgMember, team] = await Promise.all([
-      OrganizationMember.findOne({ where: { organizationId: orgId, userId } }),
-      Team.findOne({ where: { id: teamId, organizationId: orgId } }),
-    ]);
-
-    if (!team) {
-      throw new NotFoundError('Team not found');
-    }
-
-    return [orgMember, team] as const;
-  }
-
-  private ensureUserCanAddOrDeleteMember(
-    orgMember: OrganizationMember | null
-  ): void {
-    const hasPermissions =
-      !orgMember || ![Role.OWNER, Role.ADMIN].includes(orgMember.role);
-
-    if (hasPermissions) {
-      throw new ForbiddenError('Only owner or admin can add or delete members');
-    }
   }
 
   private async getUser(data: UserAdditionData): Promise<User> {
@@ -271,15 +182,10 @@ export class TeamService {
     return user;
   }
 
-  private async checkMembership(orgId: string, teamId: string, userId: string) {
-    const [membership, existingTeamMember] = await Promise.all([
-      OrganizationMember.findOne({ where: { organizationId: orgId, userId } }),
-      TeamMembership.findOne({ where: { teamId, userId } }),
-    ]);
-
-    if (!membership) {
-      throw new ForbiddenError('User is not a member of this organization');
-    }
+  private async checkMembership(teamId: string, userId: string) {
+    const existingTeamMember = await TeamMembership.findOne({
+      where: { teamId, userId },
+    });
 
     if (existingTeamMember) {
       throw new ConflictError('User is already a member of this team');

@@ -32,7 +32,7 @@ export class TeamController {
     res.status(200).json(teams);
   }
 
-  async getTeamDetails(req: TeamRequest, res: Response): Promise<void> {
+  async getTeam(req: TeamRequest, res: Response): Promise<void> {
     const { orgId, teamId } = req.params;
 
     const teamDetails = await this.teamService.getTeamDetails(orgId, teamId);

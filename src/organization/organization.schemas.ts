@@ -20,7 +20,7 @@ const roleEnum = z.enum([Role.MEMBER, Role.ADMIN]);
 
 // Organization schemas
 export const orgParamsSchema = z.object({
-  orgId: z.string().uuid().min(1),
+  orgId: z.string().uuid(),
 });
 
 export const orgBodySchema = z.object({

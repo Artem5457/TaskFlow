@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import { Organization } from '@database/models';
+import { TeamParams } from '@team/team.interfaces';
 
-export const organizationExists = async (
-  req: Request<{ orgId: string }>,
+export const organizationExist = async (
+  req: Request<TeamParams>,
   res: Response,
   next: NextFunction
 ) => {

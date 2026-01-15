@@ -11,6 +11,7 @@ import {
   orgBodySchema,
   orgParamsSchema,
 } from './organization.schemas';
+import { teamRoutes } from '../team/team.route';
 
 const router = Router();
 
@@ -69,5 +70,8 @@ router.post(
   authenticate,
   organizationController.acceptInvitation
 );
+
+// Sub-routes
+router.use('/:orgId/teams', teamRoutes);
 
 export const organizationRoutes = router;

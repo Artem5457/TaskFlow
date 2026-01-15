@@ -3,7 +3,7 @@ import { TeamController } from './team.controller';
 import {
   authenticate,
   checkPermissions,
-  organizationExists,
+  organizationExist,
   validateBody,
   validateParams,
 } from '../shared/utils/middlewares';
@@ -16,6 +16,7 @@ import {
   userAdditionSchema,
 } from './team.schemas';
 import { TeamService } from './team.service';
+import { taskRoutes } from '../task/task.route';
 
 const router = Router({ mergeParams: true });
 
@@ -28,7 +29,7 @@ router.post(
   validateParams(orgTeamParamsSchema),
   validateBody(teamBodySchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   checkPermissions,
   teamController.createTeam.bind(teamController)
 );
@@ -38,7 +39,7 @@ router.get(
   '/',
   validateParams(orgTeamParamsSchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   teamController.getOrganizationTeams.bind(teamController)
 );
 
@@ -47,8 +48,8 @@ router.get(
   '/:teamId',
   validateParams(teamParamsSchema),
   authenticate,
-  organizationExists,
-  teamController.getTeamDetails.bind(teamController)
+  organizationExist,
+  teamController.getTeam.bind(teamController)
 );
 
 // Update team (only ADMIN/OWNER)
@@ -57,7 +58,7 @@ router.patch(
   validateParams(teamParamsSchema),
   validateBody(teamUpdateBodySchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   checkPermissions,
   teamController.updateTeam.bind(teamController)
 );
@@ -67,7 +68,7 @@ router.delete(
   '/:teamId',
   validateParams(teamParamsSchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   checkPermissions,
   teamController.deleteTeam.bind(teamController)
 );
@@ -78,7 +79,7 @@ router.post(
   validateParams(teamParamsSchema),
   validateBody(userAdditionSchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   checkPermissions,
   teamController.addMemberToTeam.bind(teamController)
 );
@@ -88,9 +89,12 @@ router.delete(
   '/:teamId/members/:userId',
   validateParams(teamMemberDeleteParamsSchema),
   authenticate,
-  organizationExists,
+  organizationExist,
   checkPermissions,
   teamController.deleteTeamMember.bind(teamController)
 );
+
+// Sub-routes
+router.use('/:teamId/tasks', taskRoutes);
 
 export const teamRoutes = router;

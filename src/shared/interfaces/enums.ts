@@ -15,3 +15,9 @@ export enum TaskStatus {
   IN_PROGRESS = 'in_progress',
   DONE = 'done',
 }
+
+export enum TaskPriority {
+  LOW = 'Low',
+  MIDDLE = 'Middle',
+  HIGH = 'High',
+}

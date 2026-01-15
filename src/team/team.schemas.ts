@@ -28,7 +28,7 @@ export const teamUpdateBodySchema = z.object({
 
 export const userAdditionSchema = z
   .object({
-    userId: z.string().uuid().nonempty().optional(),
+    userId: z.string().uuid().optional(),
     email: emailSchema,
   })
   .refine((data) => data.userId || data.email, {
@@ -37,14 +37,14 @@ export const userAdditionSchema = z
 
 // Params
 export const teamParamsSchema = z.object({
-  orgId: z.string().uuid().nonempty(),
-  teamId: z.string().uuid().nonempty(),
+  orgId: z.string().uuid(),
+  teamId: z.string().uuid(),
 });
 
 export const orgTeamParamsSchema = z.object({
-  orgId: z.string().uuid().nonempty(),
+  orgId: z.string().uuid(),
 });
 
 export const teamMemberDeleteParamsSchema = teamParamsSchema.extend({
-  userId: z.string().uuid().nonempty(),
+  userId: z.string().uuid(),
 });

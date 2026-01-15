@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db-instance';
 import { OptionalTaskFields } from '../interfaces';
-import { TaskStatus } from '../../shared/interfaces';
+import { TaskPriority, TaskStatus } from '../../shared/interfaces';
 
 interface TaskAttributes {
   id: string;
@@ -9,7 +9,7 @@ interface TaskAttributes {
   title: string;
   description?: string;
   status: TaskStatus;
-  priority: number;
+  priority: TaskPriority;
   dueDate?: Date;
   assignedToId?: string;
   creatorId: string;
@@ -28,7 +28,7 @@ class Task
   public title!: string;
   public description?: string;
   public status!: TaskStatus;
-  public priority!: number;
+  public priority!: TaskPriority;
   public dueDate?: Date;
   public assignedToId?: string;
   public creatorId!: string;
@@ -55,7 +55,15 @@ Task.init(
       defaultValue: TaskStatus.OPEN,
       allowNull: false,
     },
-    priority: { type: DataTypes.SMALLINT, defaultValue: 3, allowNull: false },
+    priority: {
+      type: DataTypes.ENUM(
+        TaskPriority.LOW,
+        TaskPriority.MIDDLE,
+        TaskPriority.HIGH
+      ),
+      defaultValue: TaskPriority.MIDDLE,
+      allowNull: false,
+    },
     dueDate: { type: DataTypes.DATE, allowNull: true },
     assignedToId: { type: DataTypes.UUID, allowNull: true },
     creatorId: { type: DataTypes.UUID, allowNull: false },

@@ -40,11 +40,16 @@ export class TaskController {
   }
 
   async updateTask(req: TaskTransformRequest, res: Response): Promise<void> {
-    const { taskId } = req.params;
+    const { taskId, teamId } = req.params;
     const userId = (req as AuthRequest<TaskTransformRequest>).user.id;
     const data = req.body;
 
-    const updatedTask = this.taskService.updateTask(userId, taskId, data);
+    const updatedTask = await this.taskService.updateTask(
+      teamId,
+      userId,
+      taskId,
+      data
+    );
 
     res.status(200).json(updatedTask);
   }

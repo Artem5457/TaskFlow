@@ -15,13 +15,10 @@ export class TaskService {
     teamId: string,
     data: CreateTaskData
   ): Promise<Task> {
-    const teamMember = await TeamMembership.findOne({
-      where: { teamId, userId },
-    });
+    const { assignedToId } = data;
 
-    if (!teamMember) {
-      throw new ForbiddenError('User is not a team member');
-    }
+    this.checkUserMembership(teamId, userId);
+    this.checkAssignedUserMembership(teamId, assignedToId);
 
     const task = await Task.create({ ...data, teamId, creatorId: userId });
 
@@ -53,11 +50,15 @@ export class TaskService {
   }
 
   async updateTask(
+    teamId: string,
     userId: string,
     taskId: string,
     data: TaskData
   ): Promise<Task> {
+    const { assignedToId } = data;
+
     const task = await this.getTaskOrThrow(taskId);
+    this.checkAssignedUserMembership(teamId, assignedToId);
 
     const hasPermissions = this.checkUpdateTaskPermissions(task, userId);
 
@@ -142,5 +143,33 @@ export class TaskService {
     const hasPermissions = isAssignedUser || isCreator;
 
     return hasPermissions;
+  }
+
+  private async checkUserMembership(
+    teamId: string,
+    userId: string
+  ): Promise<void> {
+    const teamMember = await TeamMembership.findOne({
+      where: { teamId, userId },
+    });
+
+    if (!teamMember) {
+      throw new ForbiddenError('User is not a team member');
+    }
+  }
+
+  private async checkAssignedUserMembership(
+    teamId: string,
+    assignedToId?: string
+  ): Promise<void> {
+    if (assignedToId) {
+      const assignedUser = await TeamMembership.findOne({
+        where: { teamId, userId: assignedToId },
+      });
+
+      if (!assignedUser) {
+        throw new ForbiddenError('Assigned user is not a team member');
+      }
+    }
   }
 }

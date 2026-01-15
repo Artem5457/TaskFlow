@@ -14,7 +14,9 @@ export const taskBodySchema = z.object({
   dueDate: z
     .preprocess(
       (value) => (typeof value === 'string' ? new Date(value) : value),
-      z.date()
+      z.date().refine((date) => date > new Date(), {
+        message: 'Due date must be in the future',
+      })
     )
     .optional(),
   assignedToId: z.string().uuid().optional(),

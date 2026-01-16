@@ -64,11 +64,11 @@ User.hasMany(Task, { foreignKey: 'assignedToId', as: 'assignedTasks' });
 Task.belongsTo(User, { foreignKey: 'assignedToId', as: 'assignee' });
 
 // COMMENTS
-Task.hasMany(Comment, { foreignKey: 'taskId' });
-Comment.belongsTo(Task, { foreignKey: 'taskId' });
+Task.hasMany(Comment, { foreignKey: 'taskId', as: 'comments' });
+Comment.belongsTo(Task, { foreignKey: 'taskId', as: 'task' });
 
-User.hasMany(Comment, { foreignKey: 'authorId' });
-Comment.belongsTo(User, { foreignKey: 'authorId' });
+User.hasMany(Comment, { foreignKey: 'authorId', as: 'authoredComments' });
+Comment.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 
 // REFRESH TOKEN
 User.hasMany(RefreshToken, { foreignKey: 'userId', onDelete: 'CASCADE' });

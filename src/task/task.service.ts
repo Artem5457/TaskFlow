@@ -17,8 +17,8 @@ export class TaskService {
   ): Promise<Task> {
     const { assignedToId } = data;
 
-    this.checkUserMembership(teamId, userId);
-    this.checkAssignedUserMembership(teamId, assignedToId);
+    await this.checkUserMembership(teamId, userId);
+    await this.checkAssignedUserMembership(teamId, assignedToId);
 
     const task = await Task.create({ ...data, teamId, creatorId: userId });
 
@@ -26,7 +26,7 @@ export class TaskService {
     return task;
   }
 
-  async getTaskList(teamId: string, filters: FilterData): Promise<Task[]> {
+  async getTasksList(teamId: string, filters: FilterData): Promise<Task[]> {
     const where = this.buildWhere(teamId, filters);
     const order = this.buildOrder(filters);
     const include = this.buildTaskInclude();
@@ -58,7 +58,7 @@ export class TaskService {
     const { assignedToId } = data;
 
     const task = await this.getTaskOrThrow(taskId);
-    this.checkAssignedUserMembership(teamId, assignedToId);
+    await this.checkAssignedUserMembership(teamId, assignedToId);
 
     const hasPermissions = this.checkUpdateTaskPermissions(task, userId);
 

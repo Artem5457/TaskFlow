@@ -17,8 +17,8 @@ export class TaskService {
   ): Promise<Task> {
     const { assignedToId } = data;
 
-    this.checkUserMembership(teamId, userId);
-    this.checkAssignedUserMembership(teamId, assignedToId);
+    await this.checkUserMembership(teamId, userId);
+    await this.checkAssignedUserMembership(teamId, assignedToId);
 
     const task = await Task.create({ ...data, teamId, creatorId: userId });
 
@@ -58,7 +58,7 @@ export class TaskService {
     const { assignedToId } = data;
 
     const task = await this.getTaskOrThrow(taskId);
-    this.checkAssignedUserMembership(teamId, assignedToId);
+    await this.checkAssignedUserMembership(teamId, assignedToId);
 
     const hasPermissions = this.checkUpdateTaskPermissions(task, userId);
 

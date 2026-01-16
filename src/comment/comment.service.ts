@@ -12,8 +12,8 @@ export class CommentService {
   ): Promise<Comment> {
     const { body } = data;
 
-    this.checkTeamMembership(userId, teamId);
-    this.checkTeamTaskExisting(taskId, teamId);
+    await this.checkTeamMembership(userId, teamId);
+    await this.checkTeamTaskExisting(taskId, teamId);
 
     const comment = await Comment.create({
       body,
@@ -26,7 +26,7 @@ export class CommentService {
   }
 
   async getCommentsList(teamId: string, taskId: string): Promise<Comment[]> {
-    this.checkTeamTaskExisting(taskId, teamId);
+    await this.checkTeamTaskExisting(taskId, teamId);
 
     const comments = await Comment.findAll({
       where: { taskId },
@@ -47,7 +47,7 @@ export class CommentService {
     taskId: string,
     commentId: string
   ): Promise<Comment> {
-    this.checkTeamTaskExisting(taskId, teamId);
+    await this.checkTeamTaskExisting(taskId, teamId);
 
     const comment = await Comment.findOne({
       where: { id: commentId, taskId },
@@ -64,7 +64,7 @@ export class CommentService {
 
     const isAuthor = comment.authorId === userId;
     if (!isAuthor) {
-      throw new ForbiddenError('Only the author can delete this comment.');
+      throw new ForbiddenError('You can delete only your own comment');
     }
 
     await comment.destroy();

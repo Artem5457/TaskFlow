@@ -26,7 +26,7 @@ export class TaskService {
     return task;
   }
 
-  async getTaskList(teamId: string, filters: FilterData): Promise<Task[]> {
+  async getTasksList(teamId: string, filters: FilterData): Promise<Task[]> {
     const where = this.buildWhere(teamId, filters);
     const order = this.buildOrder(filters);
     const include = this.buildTaskInclude();

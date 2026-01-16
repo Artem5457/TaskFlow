@@ -8,12 +8,14 @@ export const teamExist = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { teamId } = req.params;
+  const { orgId, teamId } = req.params;
 
-  const team = await Team.findByPk(teamId);
+  const team = await Team.findOne({
+    where: { id: teamId, organizationId: orgId },
+  });
 
   if (!team) {
-    throw new NotFoundError('Team not found');
+    throw new NotFoundError('Team not found in organization');
   }
 
   next();

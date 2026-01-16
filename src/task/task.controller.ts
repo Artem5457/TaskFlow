@@ -23,10 +23,10 @@ export class TaskController {
     res.status(201).json(task);
   }
 
-  async getTaskList(req: TaskRequest, res: Response): Promise<void> {
+  async getTasks(req: TaskRequest, res: Response): Promise<void> {
     const { teamId } = req.params;
 
-    const taskList = await this.taskService.getTaskList(teamId, req.query);
+    const taskList = await this.taskService.getTasksList(teamId, req.query);
 
     res.status(200).json(taskList);
   }

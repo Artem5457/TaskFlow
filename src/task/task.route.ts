@@ -16,6 +16,7 @@ import {
   taskQuerySchema,
 } from './task.schemas';
 import { teamParamsSchema } from '../team/team.schemas';
+import { commentRoutes } from '../comment/comment.route';
 
 const router = Router({ mergeParams: true });
 
@@ -41,7 +42,7 @@ router.get(
   authenticate,
   organizationExist,
   teamExist,
-  taskController.getTaskList.bind(taskController)
+  taskController.getTasks.bind(taskController)
 );
 
 // Get task details
@@ -74,5 +75,8 @@ router.delete(
   teamExist,
   taskController.deleteTask.bind(taskController)
 );
+
+// Sub-routes
+router.use('/:taskId/comments', commentRoutes);
 
 export const taskRoutes = router;

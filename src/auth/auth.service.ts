@@ -23,9 +23,8 @@ const {
   refreshTokenSecret,
   refreshTokenExpiresIn,
   refreshTokenDaysValid,
+  salt,
 } = getConfig();
-
-const SALT_ROUNDS = 12;
 
 export class AuthService {
   async registerUser(data: RegisterReqBody): Promise<User> {
@@ -150,7 +149,7 @@ export class AuthService {
   }
 
   private async hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, SALT_ROUNDS);
+    return bcrypt.hash(password, salt);
   }
 
   private async verifyPassword(

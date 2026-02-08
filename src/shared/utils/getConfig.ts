@@ -30,4 +30,5 @@ export const getConfig = (): IConfig => ({
   invitationTokenDaysValid: Number(
     getConfigValueOrThrow(envVars.INVITATION_TOKEN_DAYS_VALID)
   ),
+  salt: Number(getConfigValueOrThrow(envVars.SALT)),
 });
